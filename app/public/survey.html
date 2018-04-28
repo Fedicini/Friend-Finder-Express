@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1>Survey questions</h1>
+                <h1>About You</h1>
+                <h2>Name (Required)</h2>
+                <div><input type="text" name="name"></div>
+                <h2>Link to Photo (Required)</h2>
+                <div><input type="text" name="photo-link"></div>
+                <div id="survey-area"></div>
+                <br>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <script> 
+        var panel = $("#survey-area");
+
+        var questions = [
+            "You enjoy the company of others",
+            "You are a party animal",
+            "You value a sense of humor over everything",
+            "You value kindness over everything",
+            "You enjoy conversing",
+            "You are socially inept",
+            "You consume technological media",
+            "You like having an adrenaline rush",
+            "You are tired",
+            "You like subs"
+        ];
+        var initSurvey = function(){
+            for(var i=0; i<questions.length; i++){
+                panel.append("<h2>"+questions[i]+"</h2>");
+                for(var j = 1;j<6;j++){
+                    var implied = ""
+                    if(j==1){
+                        implied = "(Strongly Disagree)"
+                    }
+                    else if(j==5){
+                        implied = "(Strongly Agree)"
+                    }
+                    panel.append("<input type='radio' name='question-"+(i+1)+"' value='"+j+"'>"+j+" "+implied);
+                }
+            }
+            panel.append("<br><button id='done'>Submit</button>")
+        }
+        var fillArray = function(arr,num){
+            $.each($("<input[name='question-"+num+"']:checked>"),function(){
+                arr.push($(this).attr("value"))
+                console.log($(this).val())
+            })
+        }
+        $(document).on("click","#done",function(){
+            var scores = [];
+            fillArray(scores,1);
+            fillArray(scores,2)
+            fillArray(scores,3)
+            fillArray(scores,4)
+            fillArray(scores,5)
+            fillArray(scores,6)
+            fillArray(scores,7)
+            fillArray(scores,8)
+            fillArray(scores,9)
+            fillArray(scores,10)
+            var obj = {
+                "name": $("input[name='name']").val().trim(),
+                "photo": $("input[name='photo-link']").val().trim(),
+                "scores": scores
+            }
+            $.post("/api/friends", obj)
+        .then(function(data) {
+          console.log(data);
+        });
+        })
+        initSurvey();
+    </script>
+</body>
+</html>
